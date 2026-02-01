@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>听写工作室 | 通用语言练习工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 现代CSS变量 */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #475569;
+            --gray-light: #94a3b8;
+            --border-radius: 16px;
+            --border-radius-sm: 10px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* 头部 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-text h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text p {
+            color: var(--gray-light);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--glass-bg);
+            padding: 10px 18px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--gray);
+            transition: var(--transition);
+        }
+
+        .status-dot.active {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .status-dot.paused {
+            background: var(--warning);
+            box-shadow: 0 0 10px var(--warning);
+        }
+
+        .status-dot.speaking {
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* 主要布局 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 文本区域卡片 */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: fit-content;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 250px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            color: white;
+            font-size: 16px;
+            resize: vertical;
+            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .text-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .word-count {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--gray-light);
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-light);
+        }
+
+        .control-label i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        select, input[type="number"] {
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            padding: 14px 16px;
+            color: white;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color = var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        select option {
+            background: var(--dark);
+            color: white;
+        }
+
+        /* 范围滑块 */
+        .range-container {
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            border: 3px solid var(--dark);
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
+        .range-value {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--gray-light);
+        }
+
+        .range-value .current {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* 操作按钮 - 始终可见 */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 18px 25px;
+            border-radius: var(--border-radius-sm);
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #f97316);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: var(--shadow) !important;
+        }
+
+        /* 悬浮听写按钮 - 始终可访问 */
+        .floating-dictation-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .floating-dictation-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: var(--shadow-xl), 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .floating-dictation-btn.active {
+            background: linear-gradient(135deg, var(--warning), #f97316);
+        }
+
+        .floating-dictation-btn.paused {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        /* 单词高亮 */
+        .highlight {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            border-left: 3px solid var(--primary);
+            animation: highlight-pulse 1.5s infinite;
+        }
+
+        @keyframes highlight-pulse {
+            0%, 100% { background: linear-gradient(90deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3)); }
+            50% { background: linear-gradient(90deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.5)); }
+        }
+
+        /* 进度条 */
+        .progress-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 6px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        /* 说明和使用案例 */
+        .instructions-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .instructions, .use-cases {
+            background: var(--glass-bg);
+            border-radius: var(--border-radius-sm);
+            padding: 25px;
+            border-left: 4px solid var(--primary);
+            height: 100%;
+        }
+
+        .use-cases {
+            border-left-color: var(--secondary);
+        }
+
+        .instructions h3, .use-cases h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .use-cases h3 {
+            color: var(--primary-light);
+        }
+
+        .instructions ul, .use-cases ul {
+            padding-left: 20px;
+            color: var(--gray-light);
+        }
+
+        .instructions li, .use-cases li {
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .use-cases li strong {
+            color: var(--primary-light);
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .use-cases .use-case-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .use-cases .use-case-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray-light);
+            font-size: 14px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            color: var(--primary-light);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .floating-dictation-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+            
+            .instructions-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 动画 */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-microphone-alt"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>听写工作室</h1>
+                    <p>通用语言练习工具</p>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">准备就绪</span>
+            </div>
+        </header>
+
+        <!-- 主要布局 -->
+        <div class="main-layout">
+            <!-- 文本区域卡片 -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-align-left"></i>
+                    <span>要听写的文本</span>
+                </div>
+                <textarea class="text-input" id="text" placeholder="输入或粘贴您想要通过听写练习的文本..."></textarea>
+                
+                <div class="word-count">
+                    <span>单词/字符计数: <span id="wordCount">0</span></span>
+                    <span>进度: <span id="progressText">0%</span></span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <!-- 控制面板 -->
+            <div class="control-panel">
+                <!-- 语言和语音控制 -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-cog"></i>
+                        <span>设置</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-globe"></i>
+                            <span>朗读语言</span>
+                        </label>
+                        <select id="languageSelect"></select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-user-voice"></i>
+                            <span>语音</span>
+                        </label>
+                        <select id="voiceSelect"></select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>语速</span>
+                        </label>
+                        <div class="range-container">
+                            <input type="range" min="0.1" max="2" step="0.1" value="0.8" class="range-slider" id="speed">
+                            <div class="range-value">
+                                <span>慢 (0.1x)</span>
+                                <span class="current" id="speedValue">0.8x</span>
+                                <span>快 (2x)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 重复控制 -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-redo"></i>
+                        <span>重复设置</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-words"></i>
+                            <span>多少个词/字符后重复</span>
+                        </label>
+                        <input type="number" min="1" max="50" value="3" id="repeatAfter">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-repeat"></i>
+                            <span>重复次数</span>
+                        </label>
+                        <input type="number" min="1" max="10" value="2" id="repeatTimes">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-pause-circle"></i>
+                            <span>词间停顿 (秒)</span>
+                        </label>
+                        <input type="number" min="0" max="5" step="0.1" value="0.3" id="pauseTime">
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-play-circle"></i>
+                        <span>控制</span>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="startDictation()" id="startBtn">
+                            <i class="fas fa-play"></i>
+                            <span>开始听写</span>
+                        </button>
+                        
+                        <button class="btn btn-secondary" onclick="stopDictation()" id="stopBtn">
+                            <i class="fas fa-stop"></i>
+                            <span>停止</span>
+                        </button>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-warning" onclick="pauseDictation()" id="pauseBtn" style="flex: 1;" disabled>
+                                <i class="fas fa-pause"></i>
+                                <span>暂停</span>
+                            </button>
+                            <button class="btn btn-success" onclick="resumeDictation()" id="resumeBtn" style="flex: 1;" disabled>
+                                <i class="fas fa-play"></i>
+                                <span>继续</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 说明和使用案例 -->
+        <div class="instructions-container">
+            <div class="instructions">
+                <h3><i class="fas fa-lightbulb"></i> 如何使用听写工作室</h3>
+                <ul>
+                    <li><strong>输入您的文本</strong>到上方的文本区域</li>
+                    <li><strong>从设置面板选择您喜欢的语言和语音</strong></li>
+                    <li><strong>调整语速、重复设置和停顿时长</strong>以适应您的学习节奏</li>
+                    <li><strong>点击"开始听写"</strong>或使用悬浮按钮开始</li>
+                    <li><strong>当前单词会被高亮显示</strong>朗读时用于视觉跟踪</li>
+                    <li><strong>在练习期间根据需要使用暂停/继续或停止按钮</strong></li>
+                </ul>
+            </div>
+            
+            <div class="use-cases">
+                <h3><i class="fas fa-rocket"></i> 实际使用场景</h3>
+                <div class="use-case-item">
+                    <strong>语言学习:</strong> 练习发音，提高听力理解能力，在多种语言中积累词汇。
+                </div>
+                <div class="use-case-item">
+                    <strong>专业发展:</strong> 通过控制节奏和重复练习演讲、演示或专业术语。
+                </div>
+                <div class="use-case-item">
+                    <strong>辅助工具:</strong> 通过将文本转换为语音并配合视觉跟踪，帮助有阅读困难或视觉障碍的用户。
+                </div>
+                <div class="use-case-item">
+                    <strong>记忆训练:</strong> 使用间隔重复设置来提高文本、演讲或学习材料的记忆力。
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>听写工作室 &copy; 2026 | 由 <span style="color: var(--primary-light);">Aren Group</span> 制作</p>
+            <div class="footer-logo">
+                <i class="fas fa-code"></i>
+                <span>通用语言练习工具</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 悬浮听写按钮 - 始终可访问 -->
+    <button class="floating-dictation-btn" id="floatingDictationBtn" onclick="startDictation()">
+        <i class="fas fa-microphone"></i>
+    </button>
+
+    <script>
+        // DOM 元素
+        const textInput = document.getElementById('text');
+        const languageSelect = document.getElementById('languageSelect');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const speedSlider = document.getElementById('speed');
+        const speedValue = document.getElementById('speedValue');
+        const repeatAfterInput = document.getElementById('repeatAfter');
+        const repeatTimesInput = document.getElementById('repeatTimes');
+        const pauseTimeInput = document.getElementById('pauseTime');
+        const wordCountElement = document.getElementById('wordCount');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const floatingDictationBtn = document.getElementById('floatingDictationBtn');
+
+        // 语音合成变量
+        const synth = window.speechSynthesis;
+        let voices = [];
+        let isRunning = false;
+        let isPaused = false;
+        let wordIndex = 0;
+        let wordQueue = [];
+        let originalText = "";
+        let currentUtterance = null;
+        let currentGroup = [];
+
+        // 初始化
+        function init() {
+            updateWordCount();
+            
+            // 设置事件监听器
+            textInput.addEventListener('input', updateWordCount);
+            speedSlider.addEventListener('input', updateSpeedValue);
+            
+            // 初始化速度显示
+            updateSpeedValue();
+            
+            // 语音可用时加载
+            if (synth.getVoices().length > 0) {
+                loadVoices();
+            } else {
+                synth.addEventListener('voiceschanged', loadVoices);
+            }
+            
+            // 更新状态
+            updateStatus('ready');
+            
+            // 设置默认示例文本
+            if (!textInput.value.trim()) {
+                textInput.value = "欢迎使用听写工作室！在这里输入您的文本以练习发音和听力技能。本工具支持所有语言和书写系统。";
+                updateWordCount();
+            }
+        }
+
+        // 更新单词/字符计数
+        function updateWordCount() {
+            const text = textInput.value.trim();
+            if (!text) {
+                wordCountElement.textContent = '0';
+                return;
+            }
+            
+            // 统计所有非空白元素
+            const items = splitTextIntoWords(text);
+            wordCountElement.textContent = `${items.length} 项`;
+        }
+
+        // 更新速度显示
+        function updateSpeedValue() {
+            speedValue.textContent = speedSlider.value + 'x';
+        }
+
+        // 更新状态指示器
+        function updateStatus(status) {
+            // 重置所有状态类
+            statusDot.classList.remove('active', 'paused', 'speaking');
+            floatingDictationBtn.classList.remove('active', 'paused');
+            
+            switch(status) {
+                case 'ready':
+                    statusDot.style.background = '#10b981';
+                    statusText.textContent = '准备就绪';
+                    startBtn.disabled = false;
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = true;
+                    stopBtn.disabled = true;
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    break;
+                    
+                case 'speaking':
+                    statusDot.classList.add('speaking', 'pulse');
+                    statusText.textContent = '正在朗读';
+                    startBtn.disabled = true;
+                    pauseBtn.disabled = false;
+                    resumeBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    floatingDictationBtn.classList.add('active');
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    break;
+                    
+                case 'paused':
+                    statusDot.classList.add('paused');
+                    statusText.textContent = '已暂停';
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = false;
+                    stopBtn.disabled = false;
+                    floatingDictationBtn.classList.add('paused');
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    break;
+                    
+                case 'stopped':
+                    statusDot.style.background = '#ef4444';
+                    statusText.textContent = '已停止';
+                    startBtn.disabled = false;
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = true;
+                    stopBtn.disabled = true;
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    
+                    // 2秒后重置
+                    setTimeout(() => {
+                        if (!isRunning) {
+                            updateStatus('ready');
+                        }
+                    }, 2000);
+                    break;
+            }
+        }
+
+        // 加载可用语音
+        function loadVoices() {
+            voices = synth.getVoices();
+            
+            // 清除现有选项
+            languageSelect.innerHTML = '';
+            voiceSelect.innerHTML = '';
+            
+            if (voices.length === 0) {
+                const option = document.createElement('option');
+                option.textContent = '无可用语音';
+                option.disabled = true;
+                languageSelect.appendChild(option);
+                return;
+            }
+            
+            // 按语言分组语音
+            const languageMap = {};
+            voices.forEach(voice => {
+                if (!languageMap[voice.lang]) {
+                    languageMap[voice.lang] = [];
+                }
+                languageMap[voice.lang].push(voice);
+            });
+            
+            // 按显示名称字母顺序排序语言
+            const languages = Object.keys(languageMap).sort((a, b) => {
+                return getLanguageName(a).localeCompare(getLanguageName(b));
+            });
+            
+            // 添加语言选项
+            languages.forEach(lang => {
+                const option = document.createElement('option');
+                option.value = lang;
+                option.textContent = getLanguageName(lang);
+                languageSelect.appendChild(option);
+            });
+            
+            // 如果可用，默认为中文
+            const chineseLang = languages.find(lang => lang.startsWith('zh-'));
+            if (chineseLang) {
+                languageSelect.value = chineseLang;
+            } else if (languages.length > 0) {
+                languageSelect.value = languages[0];
+            }
+            
+            // 更新语音列表
+            updateVoiceList();
+        }
+
+        // 获取友好的语言名称
+        function getLanguageName(code) {
+            try {
+                const displayNames = new Intl.DisplayNames(['zh-CN'], { type: 'language' });
+                const parts = code.split('-');
+                const languageName = displayNames.of(parts[0]);
+                const region = parts[1] ? ` (${parts[1].toUpperCase()})` : '';
+                return `${languageName}${region}`;
+            } catch (e) {
+                return code;
+            }
+        }
+
+        // 根据所选语言更新语音列表
+        function updateVoiceList() {
+            const selectedLang = languageSelect.value;
+            const filteredVoices = voices.filter(voice => voice.lang === selectedLang);
+            
+            // 清除现有选项
+            voiceSelect.innerHTML = '';
+            
+            if (filteredVoices.length === 0) {
+                // 如果所选语言没有语音，显示所有语音
+                voices.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${voice.name} (${getLanguageName(voice.lang)})`;
+                    voiceSelect.appendChild(option);
+                });
+            } else {
+                // 添加筛选后的语音
+                filteredVoices.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = voices.indexOf(voice);
+                    option.textContent = `${voice.name} ${voice.default ? '(默认)' : ''}`;
+                    voiceSelect.appendChild(option);
+                });
+                
+                // 如果可用，选择默认语音
+                const defaultVoice = filteredVoices.find(voice => voice.default);
+                if (defaultVoice) {
+                    voiceSelect.value = voices.indexOf(defaultVoice);
+                }
+            }
+        }
+
+        // 更新进度
+        function updateProgress() {
+            if (wordQueue.length === 0) return;
+            
+            const progress = Math.min(100, Math.round((wordIndex / wordQueue.length) * 100));
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${progress}%`;
+        }
+
+        // 将文本拆分为单词/字符 - 适用于所有书写系统
+        function splitTextIntoWords(text) {
+            if (!text || text.trim() === '') return [];
+            
+            // 适用于所有语言的简单拆分
+            const segments = [];
+            let currentSegment = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const isSpace = /\s/.test(char);
+                const isPunctuation = /[.,!?;:()"'«»\[\]{}]/.test(char);
+                
+                if (isSpace || isPunctuation) {
+                    if (currentSegment) {
+                        segments.push(currentSegment);
+                        currentSegment = '';
+                    }
+                    if (isPunctuation) {
+                        segments.push(char);
+                    }
+                } else {
+                    // 检查字符是否来自非拉丁字母表
+                    const isNonLatin = /[^\u0000-\u007F]/.test(char);
+                    
+                    if (isNonLatin) {
+                        // 对于非拉丁字母表，将每个字符视为独立
+                        if (currentSegment) {
+                            segments.push(currentSegment);
+                        }
+                        segments.push(char);
+                        currentSegment = '';
+                    } else {
+                        // 对于拉丁字母表，构建单词
+                        currentSegment += char;
+                    }
+                }
+            }
+            
+            // 添加任何剩余片段
+            if (currentSegment) {
+                segments.push(currentSegment);
+            }
+            
+            return segments.filter(segment => segment.trim() !== '');
+        }
+
+        // 在文本中高亮当前单词/字符
+        function highlightWord(index) {
+            const words = wordQueue;
+            
+            // 创建高亮的HTML
+            let html = '';
+            words.forEach((word, i) => {
+                if (i === index) {
+                    html += `<span class="highlight">${word}</span>`;
+                } else {
+                    html += word;
+                }
+                
+                // 在拉丁单词之间添加空格
+                const isLatin = /^[A-Za-z]+$/.test(word);
+                if (isLatin && i < words.length - 1) {
+                    html += ' ';
+                }
+            });
+            
+            // 用HTML更新文本框（用于高亮）
+            textInput.innerHTML = html;
+            
+            // 更新进度
+            updateProgress();
+        }
+
+        // 朗读一个单词/字符
+        async function speakWord(word) {
+            return new Promise((resolve) => {
+                // 取消任何当前语音
+                synth.cancel();
+                
+                // 获取设置
+                const speed = parseFloat(speedSlider.value);
+                const voiceIndex = parseInt(voiceSelect.value);
+                
+                // 创建并朗读语句
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.rate = speed;
+                
+                // 如果可用，使用选定的语音
+                if (voices[voiceIndex]) {
+                    utterance.voice = voices[voiceIndex];
+                }
+                
+                utterance.onend = resolve;
+                utterance.onerror = resolve;
+                
+                currentUtterance = utterance;
+                synth.speak(utterance);
+            });
+        }
+
+        // 主听写功能，带有效重复
+        async function runDictation() {
+            const repeatAfter = parseInt(repeatAfterInput.value);
+            const repeatTimes = parseInt(repeatTimesInput.value);
+            const pauseTime = parseFloat(pauseTimeInput.value) * 1000;
+            
+            let currentGroup = [];
+            
+            while (isRunning && wordIndex < wordQueue.length) {
+                if (isPaused) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    continue;
+                }
+                
+                // 将当前单词添加到组中
+                currentGroup.push({
+                    word: wordQueue[wordIndex],
+                    index: wordIndex
+                });
+                
+                // 高亮并朗读当前单词
+                highlightWord(wordIndex);
+                await speakWord(wordQueue[wordIndex]);
+                
+                // 词间停顿
+                if (pauseTime > 0) {
+                    await new Promise(resolve => setTimeout(resolve, pauseTime));
+                }
+                
+                // 检查是否需要重复此组
+                const shouldRepeat = (wordIndex + 1) % repeatAfter === 0 || wordIndex === wordQueue.length - 1;
+                
+                if (shouldRepeat && repeatTimes > 1) {
+                    // 重复该组（已朗读一次）
+                    for (let repeat = 1; repeat < repeatTimes; repeat++) {
+                        if (!isRunning || isPaused) break;
+                        
+                        for (const item of currentGroup) {
+                            if (!isRunning || isPaused) break;
+                            
+                            highlightWord(item.index);
+                            await speakWord(item.word);
+                            
+                            if (pauseTime > 0) {
+                                await new Promise(resolve => setTimeout(resolve, pauseTime));
+                            }
+                        }
+                    }
+                    
+                    // 清除组，准备下一组
+                    currentGroup = [];
+                }
+                
+                wordIndex++;
+            }
+            
+            // 听写完成
+            if (wordIndex >= wordQueue.length) {
+                stopDictation();
+            }
+        }
+
+        // 开始听写
+        function startDictation() {
+            if (isRunning) return;
+            
+            // 获取并准备文本
+            originalText = textInput.value.trim();
+            if (!originalText) {
+                return;
+            }
+            
+            wordQueue = splitTextIntoWords(originalText);
+            
+            if (wordQueue.length === 0) {
+                return;
+            }
+            
+            wordIndex = 0;
+            isRunning = true;
+            isPaused = false;
+            
+            // 更新界面
+            updateStatus('speaking');
+            
+            // 开始听写
+            runDictation();
+        }
+
+        // 暂停听写
+        function pauseDictation() {
+            if (!isRunning || isPaused) return;
+            
+            isPaused = true;
+            synth.pause();
+            
+            // 更新界面
+            updateStatus('paused');
+        }
+
+        // 继续听写
+        function resumeDictation() {
+            if (!isRunning || !isPaused) return;
+            
+            isPaused = false;
+            synth.resume();
+            
+            // 更新界面
+            updateStatus('speaking');
+        }
+
+        // 停止听写
+        function stopDictation() {
+            isRunning = false;
+            isPaused = false;
+            synth.cancel();
+            
+            // 更新界面
+            updateStatus('stopped');
+            
+            // 重置文本显示
+            textInput.value = originalText;
+        }
+
+        // 语言和语音选择的事件监听器
+        languageSelect.addEventListener('change', updateVoiceList);
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

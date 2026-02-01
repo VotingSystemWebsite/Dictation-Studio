@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dictation Studio | Universal Language Practice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern CSS Variables */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #475569;
+            --gray-light: #94a3b8;
+            --border-radius: 16px;
+            --border-radius-sm: 10px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-text h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text p {
+            color: var(--gray-light);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--glass-bg);
+            padding: 10px 18px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--gray);
+            transition: var(--transition);
+        }
+
+        .status-dot.active {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .status-dot.paused {
+            background: var(--warning);
+            box-shadow: 0 0 10px var(--warning);
+        }
+
+        .status-dot.speaking {
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Text Area Card */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: fit-content;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 250px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            color: white;
+            font-size: 16px;
+            resize: vertical;
+            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .text-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .word-count {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--gray-light);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-light);
+        }
+
+        .control-label i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        select, input[type="number"] {
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            padding: 14px 16px;
+            color: white;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        select option {
+            background: var(--dark);
+            color: white;
+        }
+
+        /* Range Slider */
+        .range-container {
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            border: 3px solid var(--dark);
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
+        .range-value {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--gray-light);
+        }
+
+        .range-value .current {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Action Buttons - Always Visible */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 18px 25px;
+            border-radius: var(--border-radius-sm);
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #f97316);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: var(--shadow) !important;
+        }
+
+        /* Floating Dictation Button - Always Accessible */
+        .floating-dictation-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .floating-dictation-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: var(--shadow-xl), 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .floating-dictation-btn.active {
+            background: linear-gradient(135deg, var(--warning), #f97316);
+        }
+
+        .floating-dictation-btn.paused {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        /* Word Highlight */
+        .highlight {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            border-left: 3px solid var(--primary);
+            animation: highlight-pulse 1.5s infinite;
+        }
+
+        @keyframes highlight-pulse {
+            0%, 100% { background: linear-gradient(90deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3)); }
+            50% { background: linear-gradient(90deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.5)); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 6px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        /* Instructions & Use Cases */
+        .instructions-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .instructions, .use-cases {
+            background: var(--glass-bg);
+            border-radius: var(--border-radius-sm);
+            padding: 25px;
+            border-left: 4px solid var(--primary);
+            height: 100%;
+        }
+
+        .use-cases {
+            border-left-color: var(--secondary);
+        }
+
+        .instructions h3, .use-cases h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .use-cases h3 {
+            color: var(--primary-light);
+        }
+
+        .instructions ul, .use-cases ul {
+            padding-left: 20px;
+            color: var(--gray-light);
+        }
+
+        .instructions li, .use-cases li {
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .use-cases li strong {
+            color: var(--primary-light);
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .use-cases .use-case-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .use-cases .use-case-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray-light);
+            font-size: 14px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            color: var(--primary-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .floating-dictation-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+            
+            .instructions-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-microphone-alt"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Dictation Studio</h1>
+                    <p>Universal Language Practice Tool</p>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Ready</span>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Text Input Card -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-align-left"></i>
+                    <span>Text to Dictate</span>
+                </div>
+                <textarea class="text-input" id="text" placeholder="Enter or paste the text you want to practice dictation with..."></textarea>
+                
+                <div class="word-count">
+                    <span>Word/Character count: <span id="wordCount">0</span></span>
+                    <span>Progress: <span id="progressText">0%</span></span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <!-- Language & Voice Controls -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-globe"></i>
+                            <span>Reading Language</span>
+                        </label>
+                        <select id="languageSelect"></select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-user-voice"></i>
+                            <span>Voice</span>
+                        </label>
+                        <select id="voiceSelect"></select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Speaking Speed</span>
+                        </label>
+                        <div class="range-container">
+                            <input type="range" min="0.1" max="2" step="0.1" value="0.8" class="range-slider" id="speed">
+                            <div class="range-value">
+                                <span>Slow (0.1x)</span>
+                                <span class="current" id="speedValue">0.8x</span>
+                                <span>Fast (2x)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Repeat Controls -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-redo"></i>
+                        <span>Repeat Settings</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-words"></i>
+                            <span>Repeat after (words/characters)</span>
+                        </label>
+                        <input type="number" min="1" max="50" value="3" id="repeatAfter">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-repeat"></i>
+                            <span>Repeat times</span>
+                        </label>
+                        <input type="number" min="1" max="10" value="2" id="repeatTimes">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-pause-circle"></i>
+                            <span>Pause between (seconds)</span>
+                        </label>
+                        <input type="number" min="0" max="5" step="0.1" value="0.3" id="pauseTime">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-play-circle"></i>
+                        <span>Controls</span>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="startDictation()" id="startBtn">
+                            <i class="fas fa-play"></i>
+                            <span>Start Dictation</span>
+                        </button>
+                        
+                        <button class="btn btn-secondary" onclick="stopDictation()" id="stopBtn">
+                            <i class="fas fa-stop"></i>
+                            <span>Stop</span>
+                        </button>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-warning" onclick="pauseDictation()" id="pauseBtn" style="flex: 1;" disabled>
+                                <i class="fas fa-pause"></i>
+                                <span>Pause</span>
+                            </button>
+                            <button class="btn btn-success" onclick="resumeDictation()" id="resumeBtn" style="flex: 1;" disabled>
+                                <i class="fas fa-play"></i>
+                                <span>Resume</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions & Use Cases -->
+        <div class="instructions-container">
+            <div class="instructions">
+                <h3><i class="fas fa-lightbulb"></i> How to Use Dictation Studio</h3>
+                <ul>
+                    <li><strong>Enter your text</strong> in the text area above</li>
+                    <li><strong>Select your preferred language and voice</strong> from the settings panel</li>
+                    <li><strong>Adjust speed, repeat settings, and pause duration</strong> to match your learning pace</li>
+                    <li><strong>Click "Start Dictation"</strong> or use the floating button to begin</li>
+                    <li><strong>The current word will be highlighted</strong> as it's spoken for visual tracking</li>
+                    <li><strong>Use pause/resume or stop buttons</strong> as needed during practice</li>
+                </ul>
+            </div>
+            
+            <div class="use-cases">
+                <h3><i class="fas fa-rocket"></i> Practical Use Cases</h3>
+                <div class="use-case-item">
+                    <strong>Language Learning:</strong> Practice pronunciation, improve listening comprehension, and build vocabulary in multiple languages.
+                </div>
+                <div class="use-case-item">
+                    <strong>Professional Development:</strong> Practice speeches, presentations, or technical terminology with controlled pacing and repetition.
+                </div>
+                <div class="use-case-item">
+                    <strong>Accessibility Tool:</strong> Assist users with reading difficulties or visual impairments by converting text to speech with visual tracking.
+                </div>
+                <div class="use-case-item">
+                    <strong>Memory Training:</strong> Use spaced repetition settings to improve memorization of texts, speeches, or study materials.
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Dictation Studio &copy; 2026 | Made by <span style="color: var(--primary-light);">Aren Group</span></p>
+            <div class="footer-logo">
+                <i class="fas fa-code"></i>
+                <span>Universal Language Practice Tool</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Floating Dictation Button - Always Accessible -->
+    <button class="floating-dictation-btn" id="floatingDictationBtn" onclick="startDictation()">
+        <i class="fas fa-microphone"></i>
+    </button>
+
+    <script>
+        // DOM Elements
+        const textInput = document.getElementById('text');
+        const languageSelect = document.getElementById('languageSelect');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const speedSlider = document.getElementById('speed');
+        const speedValue = document.getElementById('speedValue');
+        const repeatAfterInput = document.getElementById('repeatAfter');
+        const repeatTimesInput = document.getElementById('repeatTimes');
+        const pauseTimeInput = document.getElementById('pauseTime');
+        const wordCountElement = document.getElementById('wordCount');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const floatingDictationBtn = document.getElementById('floatingDictationBtn');
+
+        // Speech Synthesis Variables
+        const synth = window.speechSynthesis;
+        let voices = [];
+        let isRunning = false;
+        let isPaused = false;
+        let wordIndex = 0;
+        let wordQueue = [];
+        let originalText = "";
+        let currentUtterance = null;
+        let currentGroup = [];
+
+        // Initialize
+        function init() {
+            updateWordCount();
+            
+            // Set up event listeners
+            textInput.addEventListener('input', updateWordCount);
+            speedSlider.addEventListener('input', updateSpeedValue);
+            
+            // Initialize speed display
+            updateSpeedValue();
+            
+            // Load voices when they become available
+            if (synth.getVoices().length > 0) {
+                loadVoices();
+            } else {
+                synth.addEventListener('voiceschanged', loadVoices);
+            }
+            
+            // Update status
+            updateStatus('ready');
+            
+            // Set default example text
+            if (!textInput.value.trim()) {
+                textInput.value = "Welcome to Dictation Studio! Enter your text here to practice pronunciation and listening skills. The tool supports all languages and writing systems.";
+                updateWordCount();
+            }
+        }
+
+        // Update word/character count
+        function updateWordCount() {
+            const text = textInput.value.trim();
+            if (!text) {
+                wordCountElement.textContent = '0';
+                return;
+            }
+            
+            // Count all non-whitespace items
+            const items = splitTextIntoWords(text);
+            wordCountElement.textContent = `${items.length} items`;
+        }
+
+        // Update speed display
+        function updateSpeedValue() {
+            speedValue.textContent = speedSlider.value + 'x';
+        }
+
+        // Update status indicator
+        function updateStatus(status) {
+            // Reset all status classes
+            statusDot.classList.remove('active', 'paused', 'speaking');
+            floatingDictationBtn.classList.remove('active', 'paused');
+            
+            switch(status) {
+                case 'ready':
+                    statusDot.style.background = '#10b981';
+                    statusText.textContent = 'Ready';
+                    startBtn.disabled = false;
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = true;
+                    stopBtn.disabled = true;
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    break;
+                    
+                case 'speaking':
+                    statusDot.classList.add('speaking', 'pulse');
+                    statusText.textContent = 'Speaking';
+                    startBtn.disabled = true;
+                    pauseBtn.disabled = false;
+                    resumeBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    floatingDictationBtn.classList.add('active');
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    break;
+                    
+                case 'paused':
+                    statusDot.classList.add('paused');
+                    statusText.textContent = 'Paused';
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = false;
+                    stopBtn.disabled = false;
+                    floatingDictationBtn.classList.add('paused');
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    break;
+                    
+                case 'stopped':
+                    statusDot.style.background = '#ef4444';
+                    statusText.textContent = 'Stopped';
+                    startBtn.disabled = false;
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = true;
+                    stopBtn.disabled = true;
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        if (!isRunning) {
+                            updateStatus('ready');
+                        }
+                    }, 2000);
+                    break;
+            }
+        }
+
+        // Load available voices
+        function loadVoices() {
+            voices = synth.getVoices();
+            
+            // Clear existing options
+            languageSelect.innerHTML = '';
+            voiceSelect.innerHTML = '';
+            
+            if (voices.length === 0) {
+                const option = document.createElement('option');
+                option.textContent = 'No voices available';
+                option.disabled = true;
+                languageSelect.appendChild(option);
+                return;
+            }
+            
+            // Group voices by language
+            const languageMap = {};
+            voices.forEach(voice => {
+                if (!languageMap[voice.lang]) {
+                    languageMap[voice.lang] = [];
+                }
+                languageMap[voice.lang].push(voice);
+            });
+            
+            // Sort languages alphabetically by display name
+            const languages = Object.keys(languageMap).sort((a, b) => {
+                return getLanguageName(a).localeCompare(getLanguageName(b));
+            });
+            
+            // Add language options
+            languages.forEach(lang => {
+                const option = document.createElement('option');
+                option.value = lang;
+                option.textContent = getLanguageName(lang);
+                languageSelect.appendChild(option);
+            });
+            
+            // Default to English if available
+            const englishLang = languages.find(lang => lang.startsWith('en-'));
+            if (englishLang) {
+                languageSelect.value = englishLang;
+            } else if (languages.length > 0) {
+                languageSelect.value = languages[0];
+            }
+            
+            // Update voice list
+            updateVoiceList();
+        }
+
+        // Get friendly language name
+        function getLanguageName(code) {
+            try {
+                const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
+                const parts = code.split('-');
+                const languageName = displayNames.of(parts[0]);
+                const region = parts[1] ? ` (${parts[1].toUpperCase()})` : '';
+                return `${languageName}${region}`;
+            } catch (e) {
+                return code;
+            }
+        }
+
+        // Update voice list based on selected language
+        function updateVoiceList() {
+            const selectedLang = languageSelect.value;
+            const filteredVoices = voices.filter(voice => voice.lang === selectedLang);
+            
+            // Clear existing options
+            voiceSelect.innerHTML = '';
+            
+            if (filteredVoices.length === 0) {
+                // If no voices for selected language, show all voices
+                voices.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${voice.name} (${getLanguageName(voice.lang)})`;
+                    voiceSelect.appendChild(option);
+                });
+            } else {
+                // Add filtered voices
+                filteredVoices.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = voices.indexOf(voice);
+                    option.textContent = `${voice.name} ${voice.default ? '(Default)' : ''}`;
+                    voiceSelect.appendChild(option);
+                });
+                
+                // Select the default voice if available
+                const defaultVoice = filteredVoices.find(voice => voice.default);
+                if (defaultVoice) {
+                    voiceSelect.value = voices.indexOf(defaultVoice);
+                }
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            if (wordQueue.length === 0) return;
+            
+            const progress = Math.min(100, Math.round((wordIndex / wordQueue.length) * 100));
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${progress}%`;
+        }
+
+        // Split text into words/characters - works with ALL scripts
+        function splitTextIntoWords(text) {
+            if (!text || text.trim() === '') return [];
+            
+            // Simple splitting that works with all languages
+            const segments = [];
+            let currentSegment = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const isSpace = /\s/.test(char);
+                const isPunctuation = /[.,!?;:()"'«»\[\]{}]/.test(char);
+                
+                if (isSpace || isPunctuation) {
+                    if (currentSegment) {
+                        segments.push(currentSegment);
+                        currentSegment = '';
+                    }
+                    if (isPunctuation) {
+                        segments.push(char);
+                    }
+                } else {
+                    // Check if character is from a non-Latin script
+                    const isNonLatin = /[^\u0000-\u007F]/.test(char);
+                    
+                    if (isNonLatin) {
+                        // For non-Latin scripts, treat each character as separate
+                        if (currentSegment) {
+                            segments.push(currentSegment);
+                        }
+                        segments.push(char);
+                        currentSegment = '';
+                    } else {
+                        // For Latin scripts, build words
+                        currentSegment += char;
+                    }
+                }
+            }
+            
+            // Add any remaining segment
+            if (currentSegment) {
+                segments.push(currentSegment);
+            }
+            
+            return segments.filter(segment => segment.trim() !== '');
+        }
+
+        // Highlight current word/character in text
+        function highlightWord(index) {
+            const words = wordQueue;
+            
+            // Create highlighted HTML
+            let html = '';
+            words.forEach((word, i) => {
+                if (i === index) {
+                    html += `<span class="highlight">${word}</span>`;
+                } else {
+                    html += word;
+                }
+                
+                // Add space between Latin words
+                const isLatin = /^[A-Za-z]+$/.test(word);
+                if (isLatin && i < words.length - 1) {
+                    html += ' ';
+                }
+            });
+            
+            // Update textarea with HTML (for highlighting)
+            textInput.innerHTML = html;
+            
+            // Update progress
+            updateProgress();
+        }
+
+        // Speak a word/character
+        async function speakWord(word) {
+            return new Promise((resolve) => {
+                // Cancel any current speech
+                synth.cancel();
+                
+                // Get settings
+                const speed = parseFloat(speedSlider.value);
+                const voiceIndex = parseInt(voiceSelect.value);
+                
+                // Create and speak utterance
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.rate = speed;
+                
+                // Use selected voice if available
+                if (voices[voiceIndex]) {
+                    utterance.voice = voices[voiceIndex];
+                }
+                
+                utterance.onend = resolve;
+                utterance.onerror = resolve;
+                
+                currentUtterance = utterance;
+                synth.speak(utterance);
+            });
+        }
+
+        // Main dictation function with working repeat
+        async function runDictation() {
+            const repeatAfter = parseInt(repeatAfterInput.value);
+            const repeatTimes = parseInt(repeatTimesInput.value);
+            const pauseTime = parseFloat(pauseTimeInput.value) * 1000;
+            
+            let currentGroup = [];
+            
+            while (isRunning && wordIndex < wordQueue.length) {
+                if (isPaused) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    continue;
+                }
+                
+                // Add current word to group
+                currentGroup.push({
+                    word: wordQueue[wordIndex],
+                    index: wordIndex
+                });
+                
+                // Highlight and speak current word
+                highlightWord(wordIndex);
+                await speakWord(wordQueue[wordIndex]);
+                
+                // Pause between words
+                if (pauseTime > 0) {
+                    await new Promise(resolve => setTimeout(resolve, pauseTime));
+                }
+                
+                // Check if we need to repeat this group
+                const shouldRepeat = (wordIndex + 1) % repeatAfter === 0 || wordIndex === wordQueue.length - 1;
+                
+                if (shouldRepeat && repeatTimes > 1) {
+                    // Repeat the group (already spoken once)
+                    for (let repeat = 1; repeat < repeatTimes; repeat++) {
+                        if (!isRunning || isPaused) break;
+                        
+                        for (const item of currentGroup) {
+                            if (!isRunning || isPaused) break;
+                            
+                            highlightWord(item.index);
+                            await speakWord(item.word);
+                            
+                            if (pauseTime > 0) {
+                                await new Promise(resolve => setTimeout(resolve, pauseTime));
+                            }
+                        }
+                    }
+                    
+                    // Clear group for next set
+                    currentGroup = [];
+                }
+                
+                wordIndex++;
+            }
+            
+            // Dictation complete
+            if (wordIndex >= wordQueue.length) {
+                stopDictation();
+            }
+        }
+
+        // Start dictation
+        function startDictation() {
+            if (isRunning) return;
+            
+            // Get and prepare text
+            originalText = textInput.value.trim();
+            if (!originalText) {
+                return;
+            }
+            
+            wordQueue = splitTextIntoWords(originalText);
+            
+            if (wordQueue.length === 0) {
+                return;
+            }
+            
+            wordIndex = 0;
+            isRunning = true;
+            isPaused = false;
+            
+            // Update UI
+            updateStatus('speaking');
+            
+            // Start dictation
+            runDictation();
+        }
+
+        // Pause dictation
+        function pauseDictation() {
+            if (!isRunning || isPaused) return;
+            
+            isPaused = true;
+            synth.pause();
+            
+            // Update UI
+            updateStatus('paused');
+        }
+
+        // Resume dictation
+        function resumeDictation() {
+            if (!isRunning || !isPaused) return;
+            
+            isPaused = false;
+            synth.resume();
+            
+            // Update UI
+            updateStatus('speaking');
+        }
+
+        // Stop dictation
+        function stopDictation() {
+            isRunning = false;
+            isPaused = false;
+            synth.cancel();
+            
+            // Update UI
+            updateStatus('stopped');
+            
+            // Reset text display
+            textInput.value = originalText;
+        }
+
+        // Event listeners for language and voice selection
+        languageSelect.addEventListener('change', updateVoiceList);
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

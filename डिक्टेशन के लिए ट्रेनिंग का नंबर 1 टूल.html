@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>डिक्टेशन स्टूडियो | सार्वभौमिक भाषा अभ्यास उपकरण</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* आधुनिक CSS चर */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #475569;
+            --gray-light: #94a3b8;
+            --border-radius: 16px;
+            --border-radius-sm: 10px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        /* मूल शैलियाँ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* हेडर */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-text h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text p {
+            color: var(--gray-light);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--glass-bg);
+            padding: 10px 18px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--gray);
+            transition: var(--transition);
+        }
+
+        .status-dot.active {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .status-dot.paused {
+            background: var(--warning);
+            box-shadow: 0 0 10px var(--warning);
+        }
+
+        .status-dot.speaking {
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* मुख्य लेआउट */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* टेक्स्ट एरिया कार्ड */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: fit-content;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 250px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            color: white;
+            font-size: 16px;
+            resize: vertical;
+            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .text-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .word-count {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--gray-light);
+        }
+
+        /* नियंत्रण पैनल */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-light);
+        }
+
+        .control-label i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        select, input[type="number"] {
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            padding: 14px 16px;
+            color: white;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        select option {
+            background: var(--dark);
+            color: white;
+        }
+
+        /* रेंज स्लाइडर */
+        .range-container {
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            border: 3px solid var(--dark);
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
+        .range-value {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--gray-light);
+        }
+
+        .range-value .current {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* क्रिया बटन - हमेशा दृश्यमान */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 18px 25px;
+            border-radius: var(--border-radius-sm);
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #f97316);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: var(--shadow) !important;
+        }
+
+        /* फ्लोटिंग डिक्टेशन बटन - हमेशा सुलभ */
+        .floating-dictation-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .floating-dictation-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: var(--shadow-xl), 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .floating-dictation-btn.active {
+            background: linear-gradient(135deg, var(--warning), #f97316);
+        }
+
+        .floating-dictation-btn.paused {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        /* शब्द हाइलाइट */
+        .highlight {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            border-left: 3px solid var(--primary);
+            animation: highlight-pulse 1.5s infinite;
+        }
+
+        @keyframes highlight-pulse {
+            0%, 100% { background: linear-gradient(90deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3)); }
+            50% { background: linear-gradient(90deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.5)); }
+        }
+
+        /* प्रगति बार */
+        .progress-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 6px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        /* निर्देश और उपयोग के मामले */
+        .instructions-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .instructions, .use-cases {
+            background: var(--glass-bg);
+            border-radius: var(--border-radius-sm);
+            padding: 25px;
+            border-left: 4px solid var(--primary);
+            height: 100%;
+        }
+
+        .use-cases {
+            border-left-color: var(--secondary);
+        }
+
+        .instructions h3, .use-cases h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .use-cases h3 {
+            color: var(--primary-light);
+        }
+
+        .instructions ul, .use-cases ul {
+            padding-left: 20px;
+            color: var(--gray-light);
+        }
+
+        .instructions li, .use-cases li {
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .use-cases li strong {
+            color: var(--primary-light);
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .use-cases .use-case-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .use-cases .use-case-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        /* फुटर */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray-light);
+            font-size: 14px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            color: var(--primary-light);
+        }
+
+        /* रिस्पॉन्सिव */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .floating-dictation-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+            
+            .instructions-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* एनीमेशन */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- हेडर -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-microphone-alt"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>डिक्टेशन स्टूडियो</h1>
+                    <p>सार्वभौमिक भाषा अभ्यास उपकरण</p>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">तैयार</span>
+            </div>
+        </header>
+
+        <!-- मुख्य लेआउट -->
+        <div class="main-layout">
+            <!-- टेक्स्ट एरिया कार्ड -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-align-left"></i>
+                    <span>डिक्टेट करने के लिए पाठ</span>
+                </div>
+                <textarea class="text-input" id="text" placeholder="वह पाठ दर्ज या चिपकाएँ जिसे आप डिक्टेशन से अभ्यास करना चाहते हैं..."></textarea>
+                
+                <div class="word-count">
+                    <span>शब्द/अक्षर गणना: <span id="wordCount">0</span></span>
+                    <span>प्रगति: <span id="progressText">0%</span></span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <!-- नियंत्रण पैनल -->
+            <div class="control-panel">
+                <!-- भाषा और आवाज़ नियंत्रण -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-cog"></i>
+                        <span>सेटिंग्स</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-globe"></i>
+                            <span>पठन भाषा</span>
+                        </label>
+                        <select id="languageSelect"></select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-user-voice"></i>
+                            <span>आवाज़</span>
+                        </label>
+                        <select id="voiceSelect"></select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>बोलने की गति</span>
+                        </label>
+                        <div class="range-container">
+                            <input type="range" min="0.1" max="2" step="0.1" value="0.8" class="range-slider" id="speed">
+                            <div class="range-value">
+                                <span>धीमा (0.1x)</span>
+                                <span class="current" id="speedValue">0.8x</span>
+                                <span>तेज़ (2x)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- दोहराव नियंत्रण -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-redo"></i>
+                        <span>दोहराव सेटिंग्स</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-words"></i>
+                            <span>कितने शब्द/अक्षरों के बाद दोहराएँ</span>
+                        </label>
+                        <input type="number" min="1" max="50" value="3" id="repeatAfter">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-repeat"></i>
+                            <span>कितनी बार दोहराएँ</span>
+                        </label>
+                        <input type="number" min="1" max="10" value="2" id="repeatTimes">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            <i class="fas fa-pause-circle"></i>
+                            <span>शब्दों के बीच विराम (सेकंड)</span>
+                        </label>
+                        <input type="number" min="0" max="5" step="0.1" value="0.3" id="pauseTime">
+                    </div>
+                </div>
+
+                <!-- क्रिया बटन -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-play-circle"></i>
+                        <span>नियंत्रण</span>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="startDictation()" id="startBtn">
+                            <i class="fas fa-play"></i>
+                            <span>डिक्टेशन शुरू करें</span>
+                        </button>
+                        
+                        <button class="btn btn-secondary" onclick="stopDictation()" id="stopBtn">
+                            <i class="fas fa-stop"></i>
+                            <span>रोकें</span>
+                        </button>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-warning" onclick="pauseDictation()" id="pauseBtn" style="flex: 1;" disabled>
+                                <i class="fas fa-pause"></i>
+                                <span>विराम</span>
+                            </button>
+                            <button class="btn btn-success" onclick="resumeDictation()" id="resumeBtn" style="flex: 1;" disabled>
+                                <i class="fas fa-play"></i>
+                                <span>जारी रखें</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- निर्देश और उपयोग के मामले -->
+        <div class="instructions-container">
+            <div class="instructions">
+                <h3><i class="fas fa-lightbulb"></i> डिक्टेशन स्टूडियो का उपयोग कैसे करें</h3>
+                <ul>
+                    <li><strong>अपना पाठ दर्ज करें</strong> ऊपर दिए गए टेक्स्ट एरिया में</li>
+                    <li><strong>सेटिंग्स पैनल से अपनी पसंदीदा भाषा और आवाज़ चुनें</strong></li>
+                    <li><strong>अपनी सीखने की गति के अनुसार गति, दोहराव सेटिंग्स और विराम अवधि समायोजित करें</strong></li>
+                    <li><strong>शुरू करने के लिए "डिक्टेशन शुरू करें" पर क्लिक करें</strong> या फ्लोटिंग बटन का उपयोग करें</li>
+                    <li><strong>वर्तमान शब्द हाइलाइट किया जाएगा</strong> जब इसे बोला जाएगा, दृश्य ट्रैकिंग के लिए</li>
+                    <li><strong>अभ्यास के दौरान विराम/जारी या रोकें बटन का उपयोग करें</strong> जैसी आवश्यकता हो</li>
+                </ul>
+            </div>
+            
+            <div class="use-cases">
+                <h3><i class="fas fa-rocket"></i> व्यावहारिक उपयोग के मामले</h3>
+                <div class="use-case-item">
+                    <strong>भाषा सीखना:</strong> कई भाषाओं में उच्चारण का अभ्यास करें, श्रवण समझ में सुधार करें और शब्दावली बनाएँ।
+                </div>
+                <div class="use-case-item">
+                    <strong>व्यावसायिक विकास:</strong> नियंत्रित गति और दोहराव के साथ भाषण, प्रस्तुतियों या तकनीकी शब्दावली का अभ्यास करें।
+                </div>
+                <div class="use-case-item">
+                    <strong>सुलभता उपकरण:</strong> पठन कठिनाइयों या दृश्य हानि वाले उपयोगकर्ताओं की दृश्य ट्रैकिंग के साथ पाठ को भाषण में परिवर्तित करके सहायता करें।
+                </div>
+                <div class="use-case-item">
+                    <strong>स्मृति प्रशिक्षण:</strong> पाठों, भाषणों या अध्ययन सामग्री की याददाश्त में सुधार के लिए अंतराल दोहराव सेटिंग्स का उपयोग करें।
+                </div>
+            </div>
+        </div>
+
+        <!-- फुटर -->
+        <footer class="footer">
+            <p>डिक्टेशन स्टूडियो &copy; 2026 | <span style="color: var(--primary-light);">एरेन ग्रुप</span> द्वारा निर्मित</p>
+            <div class="footer-logo">
+                <i class="fas fa-code"></i>
+                <span>सार्वभौमिक भाषा अभ्यास उपकरण</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- फ्लोटिंग डिक्टेशन बटन - हमेशा सुलभ -->
+    <button class="floating-dictation-btn" id="floatingDictationBtn" onclick="startDictation()">
+        <i class="fas fa-microphone"></i>
+    </button>
+
+    <script>
+        // DOM तत्व
+        const textInput = document.getElementById('text');
+        const languageSelect = document.getElementById('languageSelect');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const speedSlider = document.getElementById('speed');
+        const speedValue = document.getElementById('speedValue');
+        const repeatAfterInput = document.getElementById('repeatAfter');
+        const repeatTimesInput = document.getElementById('repeatTimes');
+        const pauseTimeInput = document.getElementById('pauseTime');
+        const wordCountElement = document.getElementById('wordCount');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const floatingDictationBtn = document.getElementById('floatingDictationBtn');
+
+        // स्पीच सिंथेसिस वेरिएबल्स
+        const synth = window.speechSynthesis;
+        let voices = [];
+        let isRunning = false;
+        let isPaused = false;
+        let wordIndex = 0;
+        let wordQueue = [];
+        let originalText = "";
+        let currentUtterance = null;
+        let currentGroup = [];
+
+        // आरंभीकरण
+        function init() {
+            updateWordCount();
+            
+            // ईवेंट लिसनर्स सेट करें
+            textInput.addEventListener('input', updateWordCount);
+            speedSlider.addEventListener('input', updateSpeedValue);
+            
+            // गति प्रदर्शन आरंभ करें
+            updateSpeedValue();
+            
+            // उपलब्ध होने पर आवाज़ें लोड करें
+            if (synth.getVoices().length > 0) {
+                loadVoices();
+            } else {
+                synth.addEventListener('voiceschanged', loadVoices);
+            }
+            
+            // स्थिति अपडेट करें
+            updateStatus('ready');
+            
+            // डिफ़ॉल्ट उदाहरण पाठ सेट करें
+            if (!textInput.value.trim()) {
+                textInput.value = "डिक्टेशन स्टूडियो में आपका स्वागत है! उच्चारण और श्रवण कौशल का अभ्यास करने के लिए अपना पाठ यहाँ दर्ज करें। यह उपकरण सभी भाषाओं और लेखन प्रणालियों का समर्थन करता है।";
+                updateWordCount();
+            }
+        }
+
+        // शब्द/अक्षर गणना अपडेट करें
+        function updateWordCount() {
+            const text = textInput.value.trim();
+            if (!text) {
+                wordCountElement.textContent = '0';
+                return;
+            }
+            
+            // सभी गैर-रिक्त तत्व गिनें
+            const items = splitTextIntoWords(text);
+            wordCountElement.textContent = `${items.length} तत्व`;
+        }
+
+        // गति प्रदर्शन अपडेट करें
+        function updateSpeedValue() {
+            speedValue.textContent = speedSlider.value + 'x';
+        }
+
+        // स्थिति संकेतक अपडेट करें
+        function updateStatus(status) {
+            // सभी स्थिति वर्ग रीसेट करें
+            statusDot.classList.remove('active', 'paused', 'speaking');
+            floatingDictationBtn.classList.remove('active', 'paused');
+            
+            switch(status) {
+                case 'ready':
+                    statusDot.style.background = '#10b981';
+                    statusText.textContent = 'तैयार';
+                    startBtn.disabled = false;
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = true;
+                    stopBtn.disabled = true;
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    break;
+                    
+                case 'speaking':
+                    statusDot.classList.add('speaking', 'pulse');
+                    statusText.textContent = 'बोल रहा है';
+                    startBtn.disabled = true;
+                    pauseBtn.disabled = false;
+                    resumeBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    floatingDictationBtn.classList.add('active');
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    break;
+                    
+                case 'paused':
+                    statusDot.classList.add('paused');
+                    statusText.textContent = 'विराम पर';
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = false;
+                    stopBtn.disabled = false;
+                    floatingDictationBtn.classList.add('paused');
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    break;
+                    
+                case 'stopped':
+                    statusDot.style.background = '#ef4444';
+                    statusText.textContent = 'रुका हुआ';
+                    startBtn.disabled = false;
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = true;
+                    stopBtn.disabled = true;
+                    floatingDictationBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    
+                    // 2 सेकंड के बाद रीसेट करें
+                    setTimeout(() => {
+                        if (!isRunning) {
+                            updateStatus('ready');
+                        }
+                    }, 2000);
+                    break;
+            }
+        }
+
+        // उपलब्ध आवाज़ें लोड करें
+        function loadVoices() {
+            voices = synth.getVoices();
+            
+            // मौजूदा विकल्प साफ़ करें
+            languageSelect.innerHTML = '';
+            voiceSelect.innerHTML = '';
+            
+            if (voices.length === 0) {
+                const option = document.createElement('option');
+                option.textContent = 'कोई आवाज़ उपलब्ध नहीं';
+                option.disabled = true;
+                languageSelect.appendChild(option);
+                return;
+            }
+            
+            // भाषा के अनुसार आवाज़ों को समूहित करें
+            const languageMap = {};
+            voices.forEach(voice => {
+                if (!languageMap[voice.lang]) {
+                    languageMap[voice.lang] = [];
+                }
+                languageMap[voice.lang].push(voice);
+            });
+            
+            // प्रदर्शन नाम के अनुसार भाषाओं को वर्णानुक्रम में क्रमबद्ध करें
+            const languages = Object.keys(languageMap).sort((a, b) => {
+                return getLanguageName(a).localeCompare(getLanguageName(b));
+            });
+            
+            // भाषा विकल्प जोड़ें
+            languages.forEach(lang => {
+                const option = document.createElement('option');
+                option.value = lang;
+                option.textContent = getLanguageName(lang);
+                languageSelect.appendChild(option);
+            });
+            
+            // यदि उपलब्ध हो तो हिंदी को डिफ़ॉल्ट करें
+            const hindiLang = languages.find(lang => lang.startsWith('hi-'));
+            if (hindiLang) {
+                languageSelect.value = hindiLang;
+            } else if (languages.length > 0) {
+                languageSelect.value = languages[0];
+            }
+            
+            // आवाज़ सूची अपडेट करें
+            updateVoiceList();
+        }
+
+        // भाषा का मित्रवत नाम प्राप्त करें
+        function getLanguageName(code) {
+            try {
+                const displayNames = new Intl.DisplayNames(['hi'], { type: 'language' });
+                const parts = code.split('-');
+                const languageName = displayNames.of(parts[0]);
+                const region = parts[1] ? ` (${parts[1].toUpperCase()})` : '';
+                return `${languageName}${region}`;
+            } catch (e) {
+                return code;
+            }
+        }
+
+        // चयनित भाषा के आधार पर आवाज़ सूची अपडेट करें
+        function updateVoiceList() {
+            const selectedLang = languageSelect.value;
+            const filteredVoices = voices.filter(voice => voice.lang === selectedLang);
+            
+            // मौजूदा विकल्प साफ़ करें
+            voiceSelect.innerHTML = '';
+            
+            if (filteredVoices.length === 0) {
+                // यदि चयनित भाषा के लिए कोई आवाज़ नहीं है, तो सभी आवाज़ें दिखाएँ
+                voices.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${voice.name} (${getLanguageName(voice.lang)})`;
+                    voiceSelect.appendChild(option);
+                });
+            } else {
+                // फ़िल्टर्ड आवाज़ें जोड़ें
+                filteredVoices.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = voices.indexOf(voice);
+                    option.textContent = `${voice.name} ${voice.default ? '(डिफ़ॉल्ट)' : ''}`;
+                    voiceSelect.appendChild(option);
+                });
+                
+                // यदि उपलब्ध हो तो डिफ़ॉल्ट आवाज़ चुनें
+                const defaultVoice = filteredVoices.find(voice => voice.default);
+                if (defaultVoice) {
+                    voiceSelect.value = voices.indexOf(defaultVoice);
+                }
+            }
+        }
+
+        // प्रगति अपडेट करें
+        function updateProgress() {
+            if (wordQueue.length === 0) return;
+            
+            const progress = Math.min(100, Math.round((wordIndex / wordQueue.length) * 100));
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${progress}%`;
+        }
+
+        // पाठ को शब्दों/अक्षरों में विभाजित करें - सभी लेखन प्रणालियों के साथ काम करता है
+        function splitTextIntoWords(text) {
+            if (!text || text.trim() === '') return [];
+            
+            // सरल विभाजन जो सभी भाषाओं के साथ काम करता है
+            const segments = [];
+            let currentSegment = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const isSpace = /\s/.test(char);
+                const isPunctuation = /[.,!?;:()"'«»\[\]{}]/.test(char);
+                
+                if (isSpace || isPunctuation) {
+                    if (currentSegment) {
+                        segments.push(currentSegment);
+                        currentSegment = '';
+                    }
+                    if (isPunctuation) {
+                        segments.push(char);
+                    }
+                } else {
+                    // जाँचें कि क्या वर्ण गैर-लैटिन लिपि से है
+                    const isNonLatin = /[^\u0000-\u007F]/.test(char);
+                    
+                    if (isNonLatin) {
+                        // गैर-लैटिन लिपियों के लिए, प्रत्येक वर्ण को अलग से मानें
+                        if (currentSegment) {
+                            segments.push(currentSegment);
+                        }
+                        segments.push(char);
+                        currentSegment = '';
+                    } else {
+                        // लैटिन लिपियों के लिए, शब्द बनाएँ
+                        currentSegment += char;
+                    }
+                }
+            }
+            
+            // कोई भी शेष खंड जोड़ें
+            if (currentSegment) {
+                segments.push(currentSegment);
+            }
+            
+            return segments.filter(segment => segment.trim() !== '');
+        }
+
+        // पाठ में वर्तमान शब्द/अक्षर को हाइलाइट करें
+        function highlightWord(index) {
+            const words = wordQueue;
+            
+            // हाइलाइटेड HTML बनाएँ
+            let html = '';
+            words.forEach((word, i) => {
+                if (i === index) {
+                    html += `<span class="highlight">${word}</span>`;
+                } else {
+                    html += word;
+                }
+                
+                // लैटिन शब्दों के बीच स्थान जोड़ें
+                const isLatin = /^[A-Za-z]+$/.test(word);
+                if (isLatin && i < words.length - 1) {
+                    html += ' ';
+                }
+            });
+            
+            // हाइलाइटिंग के लिए टेक्स्ट एरिया को HTML के साथ अपडेट करें
+            textInput.innerHTML = html;
+            
+            // प्रगति अपडेट करें
+            updateProgress();
+        }
+
+        // एक शब्द/अक्षर बोलें
+        async function speakWord(word) {
+            return new Promise((resolve) => {
+                // कोई भी वर्तमान भाषण रद्द करें
+                synth.cancel();
+                
+                // सेटिंग्स प्राप्त करें
+                const speed = parseFloat(speedSlider.value);
+                const voiceIndex = parseInt(voiceSelect.value);
+                
+                // उच्चारण बनाएँ और बोलें
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.rate = speed;
+                
+                // यदि उपलब्ध हो तो चयनित आवाज़ का उपयोग करें
+                if (voices[voiceIndex]) {
+                    utterance.voice = voices[voiceIndex];
+                }
+                
+                utterance.onend = resolve;
+                utterance.onerror = resolve;
+                
+                currentUtterance = utterance;
+                synth.speak(utterance);
+            });
+        }
+
+        // कार्यशील दोहराव के साथ मुख्य डिक्टेशन फ़ंक्शन
+        async function runDictation() {
+            const repeatAfter = parseInt(repeatAfterInput.value);
+            const repeatTimes = parseInt(repeatTimesInput.value);
+            const pauseTime = parseFloat(pauseTimeInput.value) * 1000;
+            
+            let currentGroup = [];
+            
+            while (isRunning && wordIndex < wordQueue.length) {
+                if (isPaused) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    continue;
+                }
+                
+                // वर्तमान शब्द को समूह में जोड़ें
+                currentGroup.push({
+                    word: wordQueue[wordIndex],
+                    index: wordIndex
+                });
+                
+                // वर्तमान शब्द को हाइलाइट करें और बोलें
+                highlightWord(wordIndex);
+                await speakWord(wordQueue[wordIndex]);
+                
+                // शब्दों के बीच विराम
+                if (pauseTime > 0) {
+                    await new Promise(resolve => setTimeout(resolve, pauseTime));
+                }
+                
+                // जाँचें कि क्या हमें इस समूह को दोहराने की आवश्यकता है
+                const shouldRepeat = (wordIndex + 1) % repeatAfter === 0 || wordIndex === wordQueue.length - 1;
+                
+                if (shouldRepeat && repeatTimes > 1) {
+                    // समूह को दोहराएँ (पहले ही एक बार बोला जा चुका है)
+                    for (let repeat = 1; repeat < repeatTimes; repeat++) {
+                        if (!isRunning || isPaused) break;
+                        
+                        for (const item of currentGroup) {
+                            if (!isRunning || isPaused) break;
+                            
+                            highlightWord(item.index);
+                            await speakWord(item.word);
+                            
+                            if (pauseTime > 0) {
+                                await new Promise(resolve => setTimeout(resolve, pauseTime));
+                            }
+                        }
+                    }
+                    
+                    // अगले सेट के लिए समूह साफ़ करें
+                    currentGroup = [];
+                }
+                
+                wordIndex++;
+            }
+            
+            // डिक्टेशन पूर्ण
+            if (wordIndex >= wordQueue.length) {
+                stopDictation();
+            }
+        }
+
+        // डिक्टेशन शुरू करें
+        function startDictation() {
+            if (isRunning) return;
+            
+            // पाठ प्राप्त करें और तैयार करें
+            originalText = textInput.value.trim();
+            if (!originalText) {
+                return;
+            }
+            
+            wordQueue = splitTextIntoWords(originalText);
+            
+            if (wordQueue.length === 0) {
+                return;
+            }
+            
+            wordIndex = 0;
+            isRunning = true;
+            isPaused = false;
+            
+            // इंटरफ़ेस अपडेट करें
+            updateStatus('speaking');
+            
+            // डिक्टेशन शुरू करें
+            runDictation();
+        }
+
+        // डिक्टेशन विराम दें
+        function pauseDictation() {
+            if (!isRunning || isPaused) return;
+            
+            isPaused = true;
+            synth.pause();
+            
+            // इंटरफ़ेस अपडेट करें
+            updateStatus('paused');
+        }
+
+        // डिक्टेशन जारी रखें
+        function resumeDictation() {
+            if (!isRunning || !isPaused) return;
+            
+            isPaused = false;
+            synth.resume();
+            
+            // इंटरफ़ेस अपडेट करें
+            updateStatus('speaking');
+        }
+
+        // डिक्टेशन रोकें
+        function stopDictation() {
+            isRunning = false;
+            isPaused = false;
+            synth.cancel();
+            
+            // इंटरफ़ेस अपडेट करें
+            updateStatus('stopped');
+            
+            // पाठ प्रदर्शन रीसेट करें
+            textInput.value = originalText;
+        }
+
+        // भाषा और आवाज़ चयन के लिए ईवेंट लिसनर्स
+        languageSelect.addEventListener('change', updateVoiceList);
+
+        // पृष्ठ लोड होने पर आरंभ करें
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
