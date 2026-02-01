@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Studio de Dictée | Outil de Pratique Linguistique Universel</title>
+    <title>Dictation Studio | Universal Language Practice</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Variables CSS Modernes */
+        /* Modern CSS Variables */
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -30,7 +30,7 @@
             --glass-border: rgba(255, 255, 255, 0.08);
         }
 
-        /* Styles de Base */
+        /* Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -52,7 +52,7 @@
             padding: 30px 20px;
         }
 
-        /* En-tête */
+        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
@@ -130,7 +130,7 @@
             box-shadow: 0 0 10px var(--primary);
         }
 
-        /* Layout Principal */
+        /* Main Layout */
         .main-layout {
             display: grid;
             grid-template-columns: 1fr 350px;
@@ -144,7 +144,7 @@
             }
         }
 
-        /* Carte Zone de Texte */
+        /* Text Area Card */
         .card {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
@@ -207,7 +207,7 @@
             color: var(--gray-light);
         }
 
-        /* Panneau de Contrôle */
+        /* Control Panel */
         .control-panel {
             display: flex;
             flex-direction: column;
@@ -256,7 +256,7 @@
             color: white;
         }
 
-        /* Curseur de Gamme */
+        /* Range Slider */
         .range-container {
             position: relative;
             padding-top: 10px;
@@ -303,7 +303,7 @@
             font-weight: 600;
         }
 
-        /* Boutons d'Action - Toujours Visibles */
+        /* Action Buttons - Always Visible */
         .action-buttons {
             display: flex;
             flex-direction: column;
@@ -364,7 +364,7 @@
             box-shadow: var(--shadow) !important;
         }
 
-        /* Bouton Flottant de Dictée - Toujours Accessible */
+        /* Floating Dictation Button - Always Accessible */
         .floating-dictation-btn {
             position: fixed;
             bottom: 30px;
@@ -398,7 +398,7 @@
             background: linear-gradient(135deg, var(--success), #059669);
         }
 
-        /* Mise en Évidence des Mots */
+        /* Word Highlight */
         .highlight {
             background: linear-gradient(90deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
             color: white;
@@ -414,7 +414,7 @@
             50% { background: linear-gradient(90deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.5)); }
         }
 
-        /* Barre de Progression */
+        /* Progress Bar */
         .progress-container {
             width: 100%;
             background: rgba(255, 255, 255, 0.1);
@@ -432,7 +432,7 @@
             border-radius: 10px;
         }
 
-        /* Instructions & Cas d'Utilisation */
+        /* Instructions & Use Cases */
         .instructions-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -492,7 +492,7 @@
             padding-bottom: 0;
         }
 
-        /* Pied de Page */
+        /* Footer */
         .footer {
             text-align: center;
             margin-top: 50px;
@@ -549,55 +549,55 @@
 </head>
 <body>
     <div class="container">
-        <!-- En-tête -->
+        <!-- Header -->
         <header class="header">
             <div class="logo">
                 <div class="logo-icon">
                     <i class="fas fa-microphone-alt"></i>
                 </div>
                 <div class="logo-text">
-                    <h1>Studio de Dictée</h1>
-                    <p>Outil de Pratique Linguistique Universel</p>
+                    <h1>Dictation Studio</h1>
+                    <p>Universal Language Practice Tool</p>
                 </div>
             </div>
             <div class="status-indicator">
                 <div class="status-dot" id="statusDot"></div>
-                <span id="statusText">Prêt</span>
+                <span id="statusText">Ready</span>
             </div>
         </header>
 
-        <!-- Layout Principal -->
+        <!-- Main Layout -->
         <div class="main-layout">
-            <!-- Carte Zone de Texte -->
+            <!-- Text Input Card -->
             <div class="card">
                 <div class="card-title">
                     <i class="fas fa-align-left"></i>
-                    <span>Texte à Dicter</span>
+                    <span>Text to Dictate</span>
                 </div>
-                <textarea class="text-input" id="text" placeholder="Entrez ou collez le texte que vous souhaitez pratiquer en dictée..."></textarea>
+                <textarea class="text-input" id="text" placeholder="Enter or paste the text you want to practice dictation with..."></textarea>
                 
                 <div class="word-count">
-                    <span>Nombre de mots/caractères: <span id="wordCount">0</span></span>
-                    <span>Progression: <span id="progressText">0%</span></span>
+                    <span>Word/Character count: <span id="wordCount">0</span></span>
+                    <span>Progress: <span id="progressText">0%</span></span>
                 </div>
                 <div class="progress-container">
                     <div class="progress-bar" id="progressBar"></div>
                 </div>
             </div>
 
-            <!-- Panneau de Contrôle -->
+            <!-- Control Panel -->
             <div class="control-panel">
-                <!-- Contrôles Langue & Voix -->
+                <!-- Language & Voice Controls -->
                 <div class="card">
                     <div class="card-title">
                         <i class="fas fa-cog"></i>
-                        <span>Paramètres</span>
+                        <span>Settings</span>
                     </div>
                     
                     <div class="control-group">
                         <label class="control-label">
                             <i class="fas fa-globe"></i>
-                            <span>Langue de Lecture</span>
+                            <span>Reading Language</span>
                         </label>
                         <select id="languageSelect"></select>
                     </div>
@@ -605,7 +605,7 @@
                     <div class="control-group">
                         <label class="control-label">
                             <i class="fas fa-user-voice"></i>
-                            <span>Voix</span>
+                            <span>Voice</span>
                         </label>
                         <select id="voiceSelect"></select>
                     </div>
@@ -613,30 +613,30 @@
                     <div class="control-group">
                         <label class="control-label">
                             <i class="fas fa-tachometer-alt"></i>
-                            <span>Vitesse de Parole</span>
+                            <span>Speaking Speed</span>
                         </label>
                         <div class="range-container">
                             <input type="range" min="0.1" max="2" step="0.1" value="0.8" class="range-slider" id="speed">
                             <div class="range-value">
-                                <span>Lent (0.1x)</span>
+                                <span>Slow (0.1x)</span>
                                 <span class="current" id="speedValue">0.8x</span>
-                                <span>Rapide (2x)</span>
+                                <span>Fast (2x)</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Contrôles de Répétition -->
+                <!-- Repeat Controls -->
                 <div class="card">
                     <div class="card-title">
                         <i class="fas fa-redo"></i>
-                        <span>Paramètres de Répétition</span>
+                        <span>Repeat Settings</span>
                     </div>
                     
                     <div class="control-group">
                         <label class="control-label">
                             <i class="fas fa-words"></i>
-                            <span>Répéter après (mots/caractères)</span>
+                            <span>Repeat after (words/characters)</span>
                         </label>
                         <input type="number" min="1" max="50" value="3" id="repeatAfter">
                     </div>
@@ -644,7 +644,7 @@
                     <div class="control-group">
                         <label class="control-label">
                             <i class="fas fa-repeat"></i>
-                            <span>Nombre de répétitions</span>
+                            <span>Repeat times</span>
                         </label>
                         <input type="number" min="1" max="10" value="2" id="repeatTimes">
                     </div>
@@ -652,28 +652,28 @@
                     <div class="control-group">
                         <label class="control-label">
                             <i class="fas fa-pause-circle"></i>
-                            <span>Pause entre (secondes)</span>
+                            <span>Pause between (seconds)</span>
                         </label>
                         <input type="number" min="0" max="5" step="0.1" value="0.3" id="pauseTime">
                     </div>
                 </div>
 
-                <!-- Boutons d'Action -->
+                <!-- Action Buttons -->
                 <div class="card">
                     <div class="card-title">
                         <i class="fas fa-play-circle"></i>
-                        <span>Contrôles</span>
+                        <span>Controls</span>
                     </div>
                     
                     <div class="action-buttons">
                         <button class="btn btn-primary" onclick="startDictation()" id="startBtn">
                             <i class="fas fa-play"></i>
-                            <span>Démarrer la Dictée</span>
+                            <span>Start Dictation</span>
                         </button>
                         
                         <button class="btn btn-secondary" onclick="stopDictation()" id="stopBtn">
                             <i class="fas fa-stop"></i>
-                            <span>Arrêter</span>
+                            <span>Stop</span>
                         </button>
                         
                         <div style="display: flex; gap: 10px;">
@@ -683,7 +683,7 @@
                             </button>
                             <button class="btn btn-success" onclick="resumeDictation()" id="resumeBtn" style="flex: 1;" disabled>
                                 <i class="fas fa-play"></i>
-                                <span>Reprendre</span>
+                                <span>Resume</span>
                             </button>
                         </div>
                     </div>
@@ -691,54 +691,54 @@
             </div>
         </div>
 
-        <!-- Instructions & Cas d'Utilisation -->
+        <!-- Instructions & Use Cases -->
         <div class="instructions-container">
             <div class="instructions">
-                <h3><i class="fas fa-lightbulb"></i> Comment Utiliser le Studio de Dictée</h3>
+                <h3><i class="fas fa-lightbulb"></i> How to Use Dictation Studio</h3>
                 <ul>
-                    <li><strong>Entrez votre texte</strong> dans la zone de texte ci-dessus</li>
-                    <li><strong>Sélectionnez votre langue et voix préférées</strong> dans le panneau des paramètres</li>
-                    <li><strong>Ajustez la vitesse, les paramètres de répétition et la durée des pauses</strong> selon votre rythme d'apprentissage</li>
-                    <li><strong>Cliquez sur "Démarrer la Dictée"</strong> ou utilisez le bouton flottant pour commencer</li>
-                    <li><strong>Le mot actuel sera mis en évidence</strong> pendant qu'il est prononcé pour un suivi visuel</li>
-                    <li><strong>Utilisez les boutons pause/reprise ou arrêt</strong> selon vos besoins pendant la pratique</li>
+                    <li><strong>Enter your text</strong> in the text area above</li>
+                    <li><strong>Select your preferred language and voice</strong> from the settings panel</li>
+                    <li><strong>Adjust speed, repeat settings, and pause duration</strong> to match your learning pace</li>
+                    <li><strong>Click "Start Dictation"</strong> or use the floating button to begin</li>
+                    <li><strong>The current word will be highlighted</strong> as it's spoken for visual tracking</li>
+                    <li><strong>Use pause/resume or stop buttons</strong> as needed during practice</li>
                 </ul>
             </div>
             
             <div class="use-cases">
-                <h3><i class="fas fa-rocket"></i> Cas d'Utilisation Pratiques</h3>
+                <h3><i class="fas fa-rocket"></i> Practical Use Cases</h3>
                 <div class="use-case-item">
-                    <strong>Apprentissage des Langues:</strong> Pratiquez la prononciation, améliorez la compréhension orale et enrichissez votre vocabulaire dans plusieurs langues.
+                    <strong>Language Learning:</strong> Practice pronunciation, improve listening comprehension, and build vocabulary in multiple languages.
                 </div>
                 <div class="use-case-item">
-                    <strong>Préparation au Brevet:</strong> Parfait pour la préparation à l'épreuve de dictée du Brevet - améliorez vos compétences en dictée, orthographe et grammaire grâce à l'écoute répétée.
+                    <strong>Professional Development:</strong> Practice speeches, presentations, or technical terminology with controlled pacing and repetition.
                 </div>
                 <div class="use-case-item">
-                    <strong>Développement Professionnel:</strong> Pratiquez des discours, présentations ou terminologie technique avec un rythme contrôlé et des répétitions.
+                    <strong>Accessibility Tool:</strong> Assist users with reading difficulties or visual impairments by converting text to speech with visual tracking.
                 </div>
                 <div class="use-case-item">
-                    <strong>Outil d'Accessibilité:</strong> Aidez les utilisateurs ayant des difficultés de lecture ou des déficiences visuelles en convertissant le texte en parole avec suivi visuel.
+                    <strong>Memory Training:</strong> Use spaced repetition settings to improve memorization of texts, speeches, or study materials.
                 </div>
             </div>
         </div>
 
-        <!-- Pied de Page -->
+        <!-- Footer -->
         <footer class="footer">
-            <p>Studio de Dictée &copy; 2026 | Réalisé par <span style="color: var(--primary-light);">Aren Group</span></p>
+            <p>Dictation Studio &copy; 2026 | Made by <span style="color: var(--primary-light);">Aren Group</span></p>
             <div class="footer-logo">
                 <i class="fas fa-code"></i>
-                <span>Outil de Pratique Linguistique Universel</span>
+                <span>Universal Language Practice Tool</span>
             </div>
         </footer>
     </div>
 
-    <!-- Bouton Flottant de Dictée - Toujours Accessible -->
+    <!-- Floating Dictation Button - Always Accessible -->
     <button class="floating-dictation-btn" id="floatingDictationBtn" onclick="startDictation()">
         <i class="fas fa-microphone"></i>
     </button>
 
     <script>
-        // Éléments DOM
+        // DOM Elements
         const textInput = document.getElementById('text');
         const languageSelect = document.getElementById('languageSelect');
         const voiceSelect = document.getElementById('voiceSelect');
@@ -758,7 +758,7 @@
         const resumeBtn = document.getElementById('resumeBtn');
         const floatingDictationBtn = document.getElementById('floatingDictationBtn');
 
-        // Variables de Synthèse Vocale
+        // Speech Synthesis Variables
         const synth = window.speechSynthesis;
         let voices = [];
         let isRunning = false;
@@ -769,35 +769,35 @@
         let currentUtterance = null;
         let currentGroup = [];
 
-        // Initialisation
+        // Initialize
         function init() {
             updateWordCount();
             
-            // Configurer les écouteurs d'événements
+            // Set up event listeners
             textInput.addEventListener('input', updateWordCount);
             speedSlider.addEventListener('input', updateSpeedValue);
             
-            // Initialiser l'affichage de la vitesse
+            // Initialize speed display
             updateSpeedValue();
             
-            // Charger les voix lorsqu'elles sont disponibles
+            // Load voices when they become available
             if (synth.getVoices().length > 0) {
                 loadVoices();
             } else {
                 synth.addEventListener('voiceschanged', loadVoices);
             }
             
-            // Mettre à jour le statut
+            // Update status
             updateStatus('ready');
             
-            // Définir le texte d'exemple par défaut
+            // Set default example text
             if (!textInput.value.trim()) {
-                textInput.value = "Bienvenue au Studio de Dictée ! Entrez votre texte ici pour pratiquer la prononciation et les compétences d'écoute. L'outil prend en charge toutes les langues et systèmes d'écriture.";
+                textInput.value = "Welcome to Dictation Studio! Enter your text here to practice pronunciation and listening skills. The tool supports all languages and writing systems.";
                 updateWordCount();
             }
         }
 
-        // Mettre à jour le compteur de mots/caractères
+        // Update word/character count
         function updateWordCount() {
             const text = textInput.value.trim();
             if (!text) {
@@ -805,26 +805,26 @@
                 return;
             }
             
-            // Compter tous les éléments non blancs
+            // Count all non-whitespace items
             const items = splitTextIntoWords(text);
-            wordCountElement.textContent = `${items.length} éléments`;
+            wordCountElement.textContent = `${items.length} items`;
         }
 
-        // Mettre à jour l'affichage de la vitesse
+        // Update speed display
         function updateSpeedValue() {
             speedValue.textContent = speedSlider.value + 'x';
         }
 
-        // Mettre à jour l'indicateur de statut
+        // Update status indicator
         function updateStatus(status) {
-            // Réinitialiser toutes les classes de statut
+            // Reset all status classes
             statusDot.classList.remove('active', 'paused', 'speaking');
             floatingDictationBtn.classList.remove('active', 'paused');
             
             switch(status) {
                 case 'ready':
                     statusDot.style.background = '#10b981';
-                    statusText.textContent = 'Prêt';
+                    statusText.textContent = 'Ready';
                     startBtn.disabled = false;
                     pauseBtn.disabled = true;
                     resumeBtn.disabled = true;
@@ -834,7 +834,7 @@
                     
                 case 'speaking':
                     statusDot.classList.add('speaking', 'pulse');
-                    statusText.textContent = 'En cours de lecture';
+                    statusText.textContent = 'Speaking';
                     startBtn.disabled = true;
                     pauseBtn.disabled = false;
                     resumeBtn.disabled = true;
@@ -845,7 +845,7 @@
                     
                 case 'paused':
                     statusDot.classList.add('paused');
-                    statusText.textContent = 'En pause';
+                    statusText.textContent = 'Paused';
                     pauseBtn.disabled = true;
                     resumeBtn.disabled = false;
                     stopBtn.disabled = false;
@@ -855,14 +855,14 @@
                     
                 case 'stopped':
                     statusDot.style.background = '#ef4444';
-                    statusText.textContent = 'Arrêté';
+                    statusText.textContent = 'Stopped';
                     startBtn.disabled = false;
                     pauseBtn.disabled = true;
                     resumeBtn.disabled = true;
                     stopBtn.disabled = true;
                     floatingDictationBtn.innerHTML = '<i class="fas fa-microphone"></i>';
                     
-                    // Réinitialiser après 2 secondes
+                    // Reset after 2 seconds
                     setTimeout(() => {
                         if (!isRunning) {
                             updateStatus('ready');
@@ -872,23 +872,23 @@
             }
         }
 
-        // Charger les voix disponibles
+        // Load available voices
         function loadVoices() {
             voices = synth.getVoices();
             
-            // Effacer les options existantes
+            // Clear existing options
             languageSelect.innerHTML = '';
             voiceSelect.innerHTML = '';
             
             if (voices.length === 0) {
                 const option = document.createElement('option');
-                option.textContent = 'Aucune voix disponible';
+                option.textContent = 'No voices available';
                 option.disabled = true;
                 languageSelect.appendChild(option);
                 return;
             }
             
-            // Grouper les voix par langue
+            // Group voices by language
             const languageMap = {};
             voices.forEach(voice => {
                 if (!languageMap[voice.lang]) {
@@ -897,12 +897,12 @@
                 languageMap[voice.lang].push(voice);
             });
             
-            // Trier les langues alphabétiquement par nom d'affichage
+            // Sort languages alphabetically by display name
             const languages = Object.keys(languageMap).sort((a, b) => {
                 return getLanguageName(a).localeCompare(getLanguageName(b));
             });
             
-            // Ajouter les options de langue
+            // Add language options
             languages.forEach(lang => {
                 const option = document.createElement('option');
                 option.value = lang;
@@ -910,22 +910,22 @@
                 languageSelect.appendChild(option);
             });
             
-            // Par défaut en français si disponible
-            const frenchLang = languages.find(lang => lang.startsWith('fr-'));
-            if (frenchLang) {
-                languageSelect.value = frenchLang;
+            // Default to English if available
+            const englishLang = languages.find(lang => lang.startsWith('en-'));
+            if (englishLang) {
+                languageSelect.value = englishLang;
             } else if (languages.length > 0) {
                 languageSelect.value = languages[0];
             }
             
-            // Mettre à jour la liste des voix
+            // Update voice list
             updateVoiceList();
         }
 
-        // Obtenir le nom convivial de la langue
+        // Get friendly language name
         function getLanguageName(code) {
             try {
-                const displayNames = new Intl.DisplayNames(['fr'], { type: 'language' });
+                const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
                 const parts = code.split('-');
                 const languageName = displayNames.of(parts[0]);
                 const region = parts[1] ? ` (${parts[1].toUpperCase()})` : '';
@@ -935,16 +935,16 @@
             }
         }
 
-        // Mettre à jour la liste des voix selon la langue sélectionnée
+        // Update voice list based on selected language
         function updateVoiceList() {
             const selectedLang = languageSelect.value;
             const filteredVoices = voices.filter(voice => voice.lang === selectedLang);
             
-            // Effacer les options existantes
+            // Clear existing options
             voiceSelect.innerHTML = '';
             
             if (filteredVoices.length === 0) {
-                // Si aucune voix pour la langue sélectionnée, montrer toutes les voix
+                // If no voices for selected language, show all voices
                 voices.forEach((voice, index) => {
                     const option = document.createElement('option');
                     option.value = index;
@@ -952,15 +952,15 @@
                     voiceSelect.appendChild(option);
                 });
             } else {
-                // Ajouter les voix filtrées
+                // Add filtered voices
                 filteredVoices.forEach((voice, index) => {
                     const option = document.createElement('option');
                     option.value = voices.indexOf(voice);
-                    option.textContent = `${voice.name} ${voice.default ? '(Par défaut)' : ''}`;
+                    option.textContent = `${voice.name} ${voice.default ? '(Default)' : ''}`;
                     voiceSelect.appendChild(option);
                 });
                 
-                // Sélectionner la voix par défaut si disponible
+                // Select the default voice if available
                 const defaultVoice = filteredVoices.find(voice => voice.default);
                 if (defaultVoice) {
                     voiceSelect.value = voices.indexOf(defaultVoice);
@@ -968,7 +968,7 @@
             }
         }
 
-        // Mettre à jour la progression
+        // Update progress
         function updateProgress() {
             if (wordQueue.length === 0) return;
             
@@ -977,11 +977,11 @@
             progressText.textContent = `${progress}%`;
         }
 
-        // Diviser le texte en mots/caractères - fonctionne avec TOUS les systèmes d'écriture
+        // Split text into words/characters - works with ALL scripts
         function splitTextIntoWords(text) {
             if (!text || text.trim() === '') return [];
             
-            // Division simple qui fonctionne avec toutes les langues
+            // Simple splitting that works with all languages
             const segments = [];
             let currentSegment = '';
             
@@ -999,24 +999,24 @@
                         segments.push(char);
                     }
                 } else {
-                    // Vérifier si le caractère provient d'un script non-latin
+                    // Check if character is from a non-Latin script
                     const isNonLatin = /[^\u0000-\u007F]/.test(char);
                     
                     if (isNonLatin) {
-                        // Pour les scripts non-latins, traiter chaque caractère séparément
+                        // For non-Latin scripts, treat each character as separate
                         if (currentSegment) {
                             segments.push(currentSegment);
                         }
                         segments.push(char);
                         currentSegment = '';
                     } else {
-                        // Pour les scripts latins, construire des mots
+                        // For Latin scripts, build words
                         currentSegment += char;
                     }
                 }
             }
             
-            // Ajouter tout segment restant
+            // Add any remaining segment
             if (currentSegment) {
                 segments.push(currentSegment);
             }
@@ -1024,11 +1024,11 @@
             return segments.filter(segment => segment.trim() !== '');
         }
 
-        // Mettre en évidence le mot/caractère actuel dans le texte
+        // Highlight current word/character in text
         function highlightWord(index) {
             const words = wordQueue;
             
-            // Créer le HTML mis en évidence
+            // Create highlighted HTML
             let html = '';
             words.forEach((word, i) => {
                 if (i === index) {
@@ -1037,35 +1037,35 @@
                     html += word;
                 }
                 
-                // Ajouter un espace entre les mots latins
+                // Add space between Latin words
                 const isLatin = /^[A-Za-z]+$/.test(word);
                 if (isLatin && i < words.length - 1) {
                     html += ' ';
                 }
             });
             
-            // Mettre à jour la zone de texte avec le HTML (pour la mise en évidence)
+            // Update textarea with HTML (for highlighting)
             textInput.innerHTML = html;
             
-            // Mettre à jour la progression
+            // Update progress
             updateProgress();
         }
 
-        // Prononcer un mot/caractère
+        // Speak a word/character
         async function speakWord(word) {
             return new Promise((resolve) => {
-                // Annuler toute parole en cours
+                // Cancel any current speech
                 synth.cancel();
                 
-                // Obtenir les paramètres
+                // Get settings
                 const speed = parseFloat(speedSlider.value);
                 const voiceIndex = parseInt(voiceSelect.value);
                 
-                // Créer et prononcer l'énoncé
+                // Create and speak utterance
                 const utterance = new SpeechSynthesisUtterance(word);
                 utterance.rate = speed;
                 
-                // Utiliser la voix sélectionnée si disponible
+                // Use selected voice if available
                 if (voices[voiceIndex]) {
                     utterance.voice = voices[voiceIndex];
                 }
@@ -1078,7 +1078,7 @@
             });
         }
 
-        // Fonction principale de dictée avec répétition fonctionnelle
+        // Main dictation function with working repeat
         async function runDictation() {
             const repeatAfter = parseInt(repeatAfterInput.value);
             const repeatTimes = parseInt(repeatTimesInput.value);
@@ -1092,26 +1092,26 @@
                     continue;
                 }
                 
-                // Ajouter le mot actuel au groupe
+                // Add current word to group
                 currentGroup.push({
                     word: wordQueue[wordIndex],
                     index: wordIndex
                 });
                 
-                // Mettre en évidence et prononcer le mot actuel
+                // Highlight and speak current word
                 highlightWord(wordIndex);
                 await speakWord(wordQueue[wordIndex]);
                 
-                // Pause entre les mots
+                // Pause between words
                 if (pauseTime > 0) {
                     await new Promise(resolve => setTimeout(resolve, pauseTime));
                 }
                 
-                // Vérifier si nous devons répéter ce groupe
+                // Check if we need to repeat this group
                 const shouldRepeat = (wordIndex + 1) % repeatAfter === 0 || wordIndex === wordQueue.length - 1;
                 
                 if (shouldRepeat && repeatTimes > 1) {
-                    // Répéter le groupe (déjà prononcé une fois)
+                    // Repeat the group (already spoken once)
                     for (let repeat = 1; repeat < repeatTimes; repeat++) {
                         if (!isRunning || isPaused) break;
                         
@@ -1127,24 +1127,24 @@
                         }
                     }
                     
-                    // Effacer le groupe pour le prochain ensemble
+                    // Clear group for next set
                     currentGroup = [];
                 }
                 
                 wordIndex++;
             }
             
-            // Dictée terminée
+            // Dictation complete
             if (wordIndex >= wordQueue.length) {
                 stopDictation();
             }
         }
 
-        // Démarrer la dictée
+        // Start dictation
         function startDictation() {
             if (isRunning) return;
             
-            // Obtenir et préparer le texte
+            // Get and prepare text
             originalText = textInput.value.trim();
             if (!originalText) {
                 return;
@@ -1160,52 +1160,52 @@
             isRunning = true;
             isPaused = false;
             
-            // Mettre à jour l'interface
+            // Update UI
             updateStatus('speaking');
             
-            // Démarrer la dictée
+            // Start dictation
             runDictation();
         }
 
-        // Mettre en pause la dictée
+        // Pause dictation
         function pauseDictation() {
             if (!isRunning || isPaused) return;
             
             isPaused = true;
             synth.pause();
             
-            // Mettre à jour l'interface
+            // Update UI
             updateStatus('paused');
         }
 
-        // Reprendre la dictée
+        // Resume dictation
         function resumeDictation() {
             if (!isRunning || !isPaused) return;
             
             isPaused = false;
             synth.resume();
             
-            // Mettre à jour l'interface
+            // Update UI
             updateStatus('speaking');
         }
 
-        // Arrêter la dictée
+        // Stop dictation
         function stopDictation() {
             isRunning = false;
             isPaused = false;
             synth.cancel();
             
-            // Mettre à jour l'interface
+            // Update UI
             updateStatus('stopped');
             
-            // Réinitialiser l'affichage du texte
+            // Reset text display
             textInput.value = originalText;
         }
 
-        // Écouteurs d'événements pour la sélection de langue et de voix
+        // Event listeners for language and voice selection
         languageSelect.addEventListener('change', updateVoiceList);
 
-        // Initialiser au chargement de la page
+        // Initialize on page load
         window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
